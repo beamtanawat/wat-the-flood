@@ -1,25 +1,25 @@
 :root {
-  color-scheme: light;
-  --ink: #14202b;
-  --muted: #60707d;
-  --subtle: #7d8b96;
-  --line: #d2dde3;
-  --line-strong: #b9c8d1;
-  --surface: #f8fafb;
-  --surface-soft: #edf1f3;
-  --page: #e9eef0;
-  --accent: #176b7d;
-  --accent-soft: #edf7fa;
-  --normal: #28785d;
-  --normal-soft: #edf7f2;
-  --monitor: #956900;
-  --monitor-soft: #fff7df;
-  --high: #b65324;
-  --high-soft: #fff1e9;
-  --critical: #a32c3c;
-  --critical-soft: #fff0f2;
-  --offline: #74818b;
-  --radius: 6px;
+  color-scheme: dark;
+  --ink: #e1f3f5;
+  --muted: #9dbcc4;
+  --subtle: #7ea1ad;
+  --line: #193c48;
+  --line-strong: #306474;
+  --surface: #081c25;
+  --surface-soft: #0c2732;
+  --page: #040f16;
+  --accent: #5ce0ef;
+  --accent-soft: #10343f;
+  --normal: #64d9ae;
+  --normal-soft: #0d302c;
+  --monitor: #edd07d;
+  --monitor-soft: #332c18;
+  --high: #ffad70;
+  --high-soft: #38261e;
+  --critical: #ff8796;
+  --critical-soft: #361d2a;
+  --offline: #a0b2bd;
+  --radius: 3px;
 }
 
 * {
@@ -58,7 +58,7 @@ button {
 }
 
 .console-shell {
-  width: min(100%, 1600px);
+  width: min(100%, 2200px);
   margin: 0 auto;
   padding: 10px;
 }
@@ -289,7 +289,7 @@ dt {
 button:hover,
 button:focus-visible {
   border-color: var(--accent);
-  background: #edf7fa;
+  background: var(--accent-soft);
   outline: none;
 }
 
@@ -307,7 +307,7 @@ button:focus-visible {
   border-radius: 9px;
   background: var(--critical-soft);
   box-shadow: 0 5px 18px rgba(74, 32, 38, 0.12);
-  color: #7d2532;
+  color: var(--critical);
   font-size: 0.75rem;
   font-weight: 750;
 }
@@ -477,7 +477,7 @@ button:focus-visible {
   overflow: hidden;
   border-top: 1px solid var(--line-strong);
   border-bottom: 1px solid var(--line-strong);
-  background: rgba(248, 250, 251, 0.76);
+  background: var(--surface);
 }
 
 .metric-card {
@@ -505,7 +505,7 @@ button:focus-visible {
 .ai-metric {
   border-left: 0;
   border-right: 0;
-  background: rgba(233, 238, 240, 0.55);
+  background: var(--surface-soft);
 }
 
 .ai-metric-value {
@@ -1049,7 +1049,7 @@ td:first-child {
   grid-template-columns: minmax(135px, 0.85fr) minmax(0, 1.15fr);
   gap: 12px;
   padding: 6px 0;
-  border-bottom: 1px solid #e7ecef;
+  border-bottom: 1px solid var(--line);
 }
 
 .technical-grid dt {
@@ -1367,7 +1367,7 @@ td:first-child {
   padding: 6px 8px;
   border: 1px solid rgba(185, 200, 209, 0.85);
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--surface);
   color: var(--muted);
   font-size: 0.61rem;
 }
@@ -1475,7 +1475,7 @@ td:first-child {
 .campus-mode-badge[data-mode="SIM"] {
   border-color: #ddc36e;
   background: var(--monitor-soft);
-  color: #6b5209;
+  color: var(--monitor);
 }
 
 .campus-selected-location,
@@ -1712,4 +1712,150 @@ td:first-child {
   .technical-drawer {
     width: 100vw;
   }
+}
+
+/* Industrial console: status rail, central analysis, measurement rail. */
+body {
+  background: radial-gradient(ellipse at 50% 0, #0d2b38 0, var(--page) 65%);
+}
+
+.console-header {
+  border-top: 2px solid var(--line-strong);
+  padding-top: 10px;
+}
+
+h1 { color: var(--accent); letter-spacing: 0.04em; }
+h2 { color: var(--ink); }
+.eyebrow { color: var(--accent); letter-spacing: 0.1em; }
+
+.monitor-card,
+.metric-card,
+.workspace-card,
+.campus-map-layout {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #0c2631, var(--surface) 70%);
+  box-shadow: inset 0 1px 0 #5ce0ef12, 0 0 16px #00000020;
+}
+
+.monitor-card,
+.metric-card { padding: 18px; }
+.risk-card { border-left: 3px solid var(--risk-color); }
+.risk-value { margin: 20px 0 14px; font-size: clamp(2rem, 3vw, 3rem); }
+.risk-message,
+.device-condition-note { white-space: normal; overflow: visible; }
+.risk-message { line-height: 1.6; font-weight: 500; }
+.direction-value { margin: 20px 0; line-height: 1.15; }
+.direction-meta { flex-wrap: wrap; }
+.device-detail-row { flex-wrap: wrap; }
+.device-condition-note { margin-top: 12px; line-height: 1.6; }
+.device-name { margin: 14px 0; }
+.metric-value { color: var(--ink); margin-top: 18px; font-size: 2rem; }
+.ai-metric-value { flex-wrap: wrap; margin-top: 16px; }
+.ai-metric .eyebrow { color: var(--muted); }
+.ai-metric { background: var(--surface); }
+.chart-frame {
+  border-radius: 2px;
+  background: linear-gradient(180deg, #0b2530, #071922);
+}
+.chart-line { filter: drop-shadow(0 0 3px #5ce0ef40); }
+.sensor-node,
+.workspace-tabs,
+.chart-selector,
+.workspace-tab,
+.chart-selector-button,
+.technical-trigger,
+.table-wrap { border-radius: 3px; }
+.sensor-node { padding: 12px 8px; }
+.sensor-node.is-strongest { border-color: var(--accent); }
+.technical-drawer { color: var(--ink); border-left: 1px solid var(--line-strong); }
+button:focus-visible,
+select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+tbody tr:nth-child(even),
+.event-item:nth-child(even) { background: #102c3655; }
+.campus-map-toolbar { padding: 12px; background: var(--surface); border: 1px solid var(--line); }
+.campus-mode-badge[data-mode="SIM"] { color: var(--monitor); }
+.campus-map .leaflet-popup-content-wrapper,
+.campus-map .leaflet-popup-tip { background: var(--surface); color: var(--ink); }
+.campus-map .leaflet-control-zoom a { background: var(--surface); color: var(--ink); }
+.campus-map .leaflet-control-attribution { color: #263d45; }
+.campus-popup { color: var(--ink); }
+
+@media (min-width: 1100px) and (min-height: 700px) {
+  .console-shell { grid-template-rows: 94px minmax(0, 1fr); gap: 16px; padding: 14px 20px; }
+  .console-header {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 40px 30px;
+    gap: 6px;
+  }
+  .brand-block { grid-column: 1 / -1; text-align: center; }
+  .brand-block h1 { font-size: 1.6rem; }
+  .brand-block p { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; }
+  .header-live-state { grid-row: 2; margin: 0; }
+  .header-actions { grid-row: 2; }
+  .monitor-view {
+    grid-template-columns: minmax(240px, 0.9fr) minmax(0, 2.5fr) minmax(220px, 0.8fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .primary-monitor-row,
+  .metrics-row {
+    grid-template-columns: minmax(0, 1fr);
+    border: 0;
+    background: transparent;
+    gap: 12px;
+    overflow: visible;
+  }
+  .primary-monitor-row { grid-column: 1; grid-row: 1; grid-template-rows: 1.2fr 1fr 1fr; }
+  .metrics-row { grid-column: 3; grid-row: 1; grid-template-rows: repeat(4, minmax(0, 1fr)); }
+  .monitoring-workspace {
+    grid-column: 2;
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 205px;
+    gap: 12px;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .analysis-workspace { grid-row: 1; padding: 15px; }
+  .sensor-workspace { grid-row: 2; padding: 12px 15px; }
+  .sensor-compass {
+    grid-template-areas: "north west center east south";
+    grid-template-columns: 1fr 1fr 72px 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+  .compass-center { width: 72px; }
+  .analysis-header { align-items: center; }
+  .workspace-tabs { gap: 0; }
+  .workspace-tab { padding: 7px 8px; }
+  .risk-message { font-size: 0.78rem; }
+}
+
+@media (max-width: 1099px), (max-height: 699px) {
+  .monitor-view { grid-template-rows: auto auto auto; }
+  .primary-monitor-row,
+  .metrics-row { gap: 8px; border: 0; background: transparent; }
+  .monitoring-workspace { gap: 10px; border: 0; background: transparent; }
+  .sensor-workspace { min-height: 300px; }
+  .analysis-workspace { min-height: 400px; }
+}
+
+@media (max-width: 760px) {
+  .console-header { padding: 12px 4px; }
+  .brand-block { text-align: center; grid-column: 1 / -1; }
+  .header-actions { gap: 8px; }
+  .view-navigation { justify-content: center; }
+  .view-navigation-button { min-height: 42px; }
+  .monitor-card,
+  .metric-card { padding: 16px; }
+  .risk-value { margin: 12px 0; }
+  .metric-value { font-size: 1.65rem; }
+  .campus-side-panel { padding: 10px; border-left: 0; }
+  .campus-map-toolbar { padding: 10px; }
+  .connection-warning { max-width: calc(100vw - 28px); }
 }
