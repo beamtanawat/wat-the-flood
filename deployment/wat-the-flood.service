@@ -1,0 +1,27 @@
+[Unit]
+Description=WAT THE FLOOD prototype dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wat-the-flood
+Group=wat-the-flood
+WorkingDirectory=/opt/wat-the-flood
+Environment=PATH=/opt/wat-the-flood/.venv/bin
+Environment=WAT_THE_FLOOD_PROFILE=/opt/wat-the-flood/configuration/prototype.json
+Environment=WAT_THE_FLOOD_DATABASE=/var/lib/wat-the-flood/wat-the-flood.sqlite3
+Environment=WAT_THE_FLOOD_MODEL=/opt/wat-the-flood/ai/models/model.joblib
+Environment=WAT_THE_FLOOD_MODEL_METADATA=/opt/wat-the-flood/ai/models/model_metadata.json
+ExecStart=/opt/wat-the-flood/.venv/bin/waitress-serve --call --listen=0.0.0.0:8000 app:create_app
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/wat-the-flood
+
+[Install]
+WantedBy=multi-user.target

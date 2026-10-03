@@ -1,0 +1,27 @@
+{
+  "mode": "simulator",
+  "profile_validated": true,
+  "device_id": "esp32-01",
+  "calibration_version": "demo-identity-v1",
+  "max_body_bytes": 4096,
+  "input_envelopes": {
+    "water_level_cm": [0, 100],
+    "conductivity_ms_cm": [0, 10],
+    "directional_rms_v": [0, 2]
+  },
+  "direction_tolerance_v": 0.01,
+  "low_signal_threshold_v": 0.01,
+  "rule_thresholds": {
+    "critical_voltage_v": 1.0,
+    "high_voltage_v": 0.5,
+    "monitor_voltage_v": 0.2,
+    "water_level_cm": 20,
+    "conductivity_ms_cm": 2
+  },
+  "ai_model_path": "ai/models/model.joblib",
+  "ai_metadata_path": "ai/models/model_metadata.json",
+  "receipt_interval_seconds": 1.0,
+  "online_max_age_seconds": 5.0,
+  "stale_max_age_seconds": 30.0,
+  "rule_version": "prototype-rules-v1"
+}

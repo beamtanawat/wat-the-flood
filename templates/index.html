@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WAT THE FLOOD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  </head>
+  <body>
+    <main class="console-shell">
+      <header class="console-header">
+        <div class="brand-block">
+          <h1>WAT THE FLOOD</h1>
+          <p>Electrical Anomaly Monitor</p>
+        </div>
+
+        <div class="header-live-state" aria-label="Live device state">
+          <span class="status-pill" id="device-status-pill" data-status="unknown">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="device-status">Waiting</span>
+          </span>
+          <span class="header-freshness">
+            Updated <strong id="reading-age">—</strong>
+          </span>
+        </div>
+
+        <div class="header-actions">
+          <div class="prototype-mark" role="note" title="University prototype. Readings are development evidence, not certified safety results.">
+            <span>University prototype</span>
+            <small>ⓘ Prototype — not a certified safety device</small>
+          </div>
+          <button id="open-technical-details" class="technical-trigger" type="button" aria-haspopup="dialog">
+            Technical details
+          </button>
+        </div>
+      </header>
+
+      <div id="connection-warning" class="connection-warning" role="status" title="Backend connection warning: latest reading unavailable." hidden>
+        <span aria-hidden="true">⚠</span> Latest reading unavailable
+      </div>
+
+      <section class="primary-monitor-row" aria-label="Current monitoring result">
+        <article id="risk-card" class="monitor-card risk-card risk-normal" aria-labelledby="risk-heading">
+          <div class="card-label-row">
+            <p class="eyebrow">Rule risk</p>
+            <span class="primary-label">Primary</span>
+          </div>
+          <h2 id="risk-heading" class="visually-hidden">Prototype rule risk</h2>
+          <p id="rule-risk" class="risk-value">Waiting</p>
+          <p id="rule-risk-message" class="risk-message">No sensor reading yet</p>
+        </article>
+
+        <article id="direction-card" class="monitor-card direction-card" aria-labelledby="direction-heading">
+          <p class="eyebrow">Direction</p>
+          <h2 id="direction-heading" class="visually-hidden">Deterministic direction analysis</h2>
+          <p class="direction-value" id="direction">
+            <span id="direction-arrow">—</span>
+          </p>
+          <div class="direction-meta">
+            <p id="direction-reason">No clear signal</p>
+            <strong><span id="gradient-v">—</span> V</strong>
+          </div>
+        </article>
+
+        <article class="monitor-card device-card" aria-labelledby="device-heading">
+          <p class="eyebrow">Device / freshness</p>
+          <h2 id="device-heading" class="device-name"><span id="device-id">esp32-01</span></h2>
+          <div class="device-detail-row">
+            <span>Last received</span>
+            <time id="last-received">No reading</time>
+          </div>
+          <p id="device-condition-note" class="device-condition-note" data-unknown-message="Current conditions unknown — last received reading shown.">Waiting for sensor readings.</p>
+        </article>
+      </section>
+
+      <section id="key-measurements" class="metrics-row" aria-label="Key measurements">
+        <article class="metric-card">
+          <p class="eyebrow">Water level</p>
+          <p class="metric-value"><span id="water-level">—</span> <small>cm</small></p>
+        </article>
+        <article class="metric-card">
+          <p class="eyebrow">Conductivity</p>
+          <p class="metric-value"><span id="conductivity">—</span> <small>mS/cm</small></p>
+        </article>
+        <article class="metric-card">
+          <p class="eyebrow">Electrical magnitude</p>
+          <p class="metric-value"><span id="electrical-magnitude">—</span> <small>V RMS</small></p>
+        </article>
+        <article class="metric-card ai-metric" aria-labelledby="ai-heading">
+          <div class="metric-heading-row">
+            <p class="eyebrow" id="ai-heading">Synthetic AI comparison</p>
+            <span class="ai-status" id="ai-status">UNAVAILABLE</span>
+          </div>
+          <div class="ai-metric-value">
+            <strong id="ai-risk">Unavailable</strong>
+            <span id="ai-confidence">—</span>
+            <span class="agreement-badge" id="ai-agreement" data-result="unavailable">No comparison</span>
+          </div>
+          <span class="model-name" id="model-version">—</span>
+        </article>
+      </section>
+
+      <section id="monitoring-workspace" class="monitoring-workspace" aria-label="Monitoring workspace">
+        <article class="workspace-card sensor-workspace" aria-labelledby="sensor-heading">
+          <div class="workspace-card-header">
+            <div>
+              <p class="eyebrow">Directional sensors</p>
+              <h2 id="sensor-heading">Measured RMS voltage</h2>
+            </div>
+            <p class="strongest-reading">
+              <span>Strongest measured direction</span>
+              <strong id="strongest-direction">—</strong>
+            </p>
+          </div>
+
+          <div class="sensor-compass" id="sensor-compass" data-strongest="none">
+            <div class="sensor-node sensor-north" data-direction="north">
+              <span>North</span>
+              <strong><span id="north-rms">—</span> V</strong>
+              <i aria-hidden="true"></i>
+            </div>
+            <div class="sensor-node sensor-west" data-direction="west">
+              <span>West</span>
+              <strong><span id="west-rms">—</span> V</strong>
+              <i aria-hidden="true"></i>
+            </div>
+            <div class="compass-center" aria-hidden="true">
+              <span>N</span><span>E</span><span>S</span><span>W</span>
+              <b></b>
+            </div>
+            <div class="sensor-node sensor-east" data-direction="east">
+              <span>East</span>
+              <strong><span id="east-rms">—</span> V</strong>
+              <i aria-hidden="true"></i>
+            </div>
+            <div class="sensor-node sensor-south" data-direction="south">
+              <span>South</span>
+              <strong><span id="south-rms">—</span> V</strong>
+              <i aria-hidden="true"></i>
+            </div>
+          </div>
+          <p class="sensor-note">Strongest measured channel only; not a proven source location.</p>
+        </article>
+
+        <article class="workspace-card analysis-workspace" aria-labelledby="analysis-heading">
+          <div class="analysis-header">
+            <div>
+              <p class="eyebrow">Analysis</p>
+              <h2 id="analysis-heading">Recent measurements</h2>
+            </div>
+            <div id="workspace-tabs" role="tablist" aria-label="Analysis views" class="workspace-tabs">
+              <button id="workspace-tab-trends" class="workspace-tab" type="button" role="tab" aria-selected="true" aria-controls="workspace-panel-trends" data-workspace-tab="trends" tabindex="0">Trends</button>
+              <button id="workspace-tab-history" class="workspace-tab" type="button" role="tab" aria-selected="false" aria-controls="workspace-panel-history" data-workspace-tab="history" tabindex="-1">History</button>
+              <button id="workspace-tab-events" class="workspace-tab" type="button" role="tab" aria-selected="false" aria-controls="workspace-panel-events" data-workspace-tab="events" tabindex="-1">Events</button>
+            </div>
+          </div>
+
+          <div class="workspace-panel-stack">
+            <section id="workspace-panel-trends" class="workspace-panel trends-view" role="tabpanel" aria-labelledby="workspace-tab-trends" data-workspace-panel="trends">
+              <div class="chart-selector" role="group" aria-label="Trend metric">
+                <button class="chart-selector-button is-active" type="button" data-chart-metric="gradient" aria-pressed="true">Electrical</button>
+                <button class="chart-selector-button" type="button" data-chart-metric="water" aria-pressed="false">Water</button>
+                <button class="chart-selector-button" type="button" data-chart-metric="conductivity" aria-pressed="false">Conductivity</button>
+              </div>
+              <figure class="chart-frame" data-chart-panel="gradient">
+                <figcaption>Directional magnitude <span>V</span></figcaption>
+                <svg id="gradient-chart" viewBox="0 0 680 220" role="img" aria-label="Directional magnitude chart"></svg>
+              </figure>
+              <figure class="chart-frame" data-chart-panel="water" hidden>
+                <figcaption>Water level <span>cm</span></figcaption>
+                <svg id="water-chart" viewBox="0 0 680 220" role="img" aria-label="Water level chart"></svg>
+              </figure>
+              <figure class="chart-frame" data-chart-panel="conductivity" hidden>
+                <figcaption>Conductivity <span>mS/cm</span></figcaption>
+                <svg id="conductivity-chart" viewBox="0 0 680 220" role="img" aria-label="Conductivity chart"></svg>
+              </figure>
+            </section>
+
+            <section id="workspace-panel-history" class="workspace-panel history-view" role="tabpanel" aria-labelledby="workspace-tab-history" data-workspace-panel="history" hidden>
+              <div class="history-toolbar">
+                <p id="history-empty" class="empty-state">Waiting for sensor readings.</p>
+                <div class="history-controls">
+                  <button id="return-latest" type="button" hidden>Latest</button>
+                  <button id="older-readings" type="button" hidden>Older</button>
+                </div>
+              </div>
+              <div class="table-wrap" tabindex="0" aria-label="Recent readings table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Time</th>
+                      <th scope="col">Rule</th>
+                      <th scope="col">AI</th>
+                      <th scope="col">Dir</th>
+                      <th scope="col">Water</th>
+                      <th scope="col">Conductivity</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history-body"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section id="workspace-panel-events" class="workspace-panel events-view" role="tabpanel" aria-labelledby="workspace-tab-events" data-workspace-panel="events" hidden>
+              <div class="events-heading">
+                <p>Recent HIGH and CRITICAL rule readings</p>
+              </div>
+              <ul id="anomaly-list" class="event-list">
+                <li class="empty-state">No elevated readings.</li>
+              </ul>
+            </section>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <dialog id="technical-drawer" class="technical-drawer" role="dialog" aria-modal="true" aria-labelledby="technical-drawer-title">
+      <div class="drawer-shell">
+        <header class="drawer-header">
+          <div>
+            <p class="eyebrow">Development diagnostics</p>
+            <h2 id="technical-drawer-title">Technical details</h2>
+          </div>
+          <button id="close-technical-details" class="drawer-close" type="button" aria-label="Close technical details">×</button>
+        </header>
+        <div class="drawer-content">
+          <p class="drawer-notice">University prototype. Readings are development evidence, not certified safety results.</p>
+          <div class="technical-grid">
+            <dl>
+              <div><dt>device_id</dt><dd id="technical-device-id">esp32-01</dd></div>
+              <div><dt>timestamp</dt><dd id="raw-timestamp">—</dd></div>
+              <div><dt>calibration_version</dt><dd id="calibration-version">—</dd></div>
+              <div><dt>analysis_source</dt><dd id="analysis-source">—</dd></div>
+              <div><dt>rule_version</dt><dd id="rule-version">—</dd></div>
+              <div><dt>direction_reason</dt><dd id="direction-reason-value">—</dd></div>
+            </dl>
+            <dl>
+              <div><dt>water_level_cm</dt><dd id="technical-water">—</dd></div>
+              <div><dt>conductivity_ms_cm</dt><dd id="technical-conductivity">—</dd></div>
+              <div><dt>north_rms_v</dt><dd id="technical-north">—</dd></div>
+              <div><dt>east_rms_v</dt><dd id="technical-east">—</dd></div>
+              <div><dt>south_rms_v</dt><dd id="technical-south">—</dd></div>
+              <div><dt>west_rms_v</dt><dd id="technical-west">—</dd></div>
+            </dl>
+            <dl>
+              <div><dt>vx_v</dt><dd id="vx-v">—</dd></div>
+              <div><dt>vy_v</dt><dd id="vy-v">—</dd></div>
+              <div><dt>gradient_v</dt><dd id="technical-gradient">—</dd></div>
+              <div><dt>ai_status</dt><dd id="technical-ai-status">UNAVAILABLE</dd></div>
+              <div><dt>ai_confidence</dt><dd id="technical-ai-confidence">—</dd></div>
+              <div><dt>model_version</dt><dd id="technical-model-version">—</dd></div>
+            </dl>
+          </div>
+          <p class="drawer-footnote">Synthetic model comparison only. Model score; not a validated safety probability.</p>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+data/*.sqlite3
+data/*.db
+
+ai/dataset.csv
+ai/dataset_metadata.json
+ai/models/*
+ai/reports/*
+
+.env
