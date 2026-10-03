@@ -29,14 +29,16 @@ def test_dashboard_page_exposes_priority_sections(client):
     assert response.content_type.startswith("text/html")
     html = response.get_data(as_text=True)
     assert "WAT THE FLOOD" in html
+    assert "Flood Electrical Monitor" in html
     assert "University prototype" in html
     assert 'id="rule-risk"' in html
-    assert "Prototype rule risk" in html
-    assert "Synthetic AI comparison" in html
+    assert "Risk Level" in html
+    assert "AI Analysis" in html
+    assert "Live Trends" in html
+    assert "Signal direction only" in html
     assert 'id="history-body"' in html
     assert 'id="older-readings"' in html
     assert 'id="return-latest"' in html
-    assert "Current conditions unknown — last received reading shown." in html
     assert 'id="gradient-chart"' in html
     assert 'id="water-chart"' in html
     assert 'id="conductivity-chart"' in html
@@ -44,6 +46,45 @@ def test_dashboard_page_exposes_priority_sections(client):
     assert "conductivity_ms_cm" in html
     assert "north_rms_v" in html
     assert ">SAFE<" not in html
+
+
+def test_dashboard_uses_plain_labels_and_keeps_diagnostics_in_technical_details(client):
+    html = client.get("/").get_data(as_text=True)
+    drawer_position = html.index('id="technical-drawer"')
+
+    assert "Device Status" in html
+    assert "Last Update" in html
+    assert "Signal Level" in html
+    assert "Direction Sensors" in html
+    assert "Sensor Signal" in html
+    assert "Strongest Signal" in html
+    assert "Prototype · Not safety-certified" in html
+    assert "Synthetic model comparison only" in html
+    assert "Strongest measured channel only. This does not confirm the physical source location." in html
+    assert html.index("Synthetic model comparison only") > drawer_position
+    assert html.index("Strongest measured channel only. This does not confirm the physical source location.") > drawer_position
+    assert "Rule risk" not in html
+    assert "Synthetic AI comparison" not in html
+    assert "Strongest measured direction" not in html
+
+
+def test_dashboard_simplifies_dynamic_monitoring_messages():
+    values = run_dashboard_formatters(
+        """
+        const dashboard = require('./static/js/dashboard.js');
+        process.stdout.write(JSON.stringify({
+          monitor: dashboard.riskMessage('MONITOR'),
+          lowSignal: dashboard.directionReasonMessage('LOW_SIGNAL'),
+          ambiguous: dashboard.directionReasonMessage('AMBIGUOUS')
+        }));
+        """
+    )
+
+    assert values == {
+        "monitor": "Check sensor readings.",
+        "lowSignal": "No clear signal",
+        "ambiguous": "No clear signal",
+    }
 
 
 def test_dashboard_prioritizes_rule_direction_and_compact_measurements(client):
@@ -169,16 +210,18 @@ def test_dashboard_distinguishes_no_reading_from_stale_reading():
         const dashboard = require('./static/js/dashboard.js');
         process.stdout.write(JSON.stringify({
           empty: dashboard.deviceConditionMessage('OFFLINE', null),
-          stale: dashboard.deviceConditionMessage('OFFLINE', '2026-10-03T06:39:13.978Z'),
-          live: dashboard.deviceConditionMessage('ONLINE', '2026-10-03T06:39:13.978Z')
+          stale: dashboard.deviceConditionMessage('STALE', '2026-10-03T06:39:13.978Z'),
+          live: dashboard.deviceConditionMessage('ONLINE', '2026-10-03T06:39:13.978Z'),
+          offline: dashboard.deviceConditionMessage('OFFLINE', '2026-10-03T06:39:13.978Z')
         }));
         """
     )
 
     assert values == {
         "empty": "Waiting for sensor readings.",
-        "stale": "Current conditions unknown — last received reading shown.",
-        "live": "Receiving live sensor data",
+        "stale": "Showing last received data.",
+        "live": "Receiving live data",
+        "offline": "Device offline — showing last data.",
     }
 
 

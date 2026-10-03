@@ -16,6 +16,17 @@
     second: "2-digit",
     hourCycle: "h23",
   });
+  const RISK_MESSAGES = {
+    NORMAL: "No electrical anomaly detected at monitored point",
+    MONITOR: "Check sensor readings.",
+    HIGH: "Electrical anomaly detected.",
+    CRITICAL: "Electrical anomaly detected.",
+  };
+  const DIRECTION_REASON_MESSAGES = {
+    LOW_SIGNAL: "No clear signal",
+    AMBIGUOUS: "No clear signal",
+    DOMINANT_AXIS: "Dominant directional gradient",
+  };
 
   function datePartMap(formatter, date) {
     return Object.fromEntries(
@@ -78,12 +89,23 @@
       return "Waiting for sensor readings.";
     }
     if (status === "ONLINE") {
-      return "Receiving live sensor data";
+      return "Receiving live data";
     }
-    if (status === "STALE" || status === "OFFLINE") {
-      return "Current conditions unknown — last received reading shown.";
+    if (status === "STALE") {
+      return "Showing last received data.";
+    }
+    if (status === "OFFLINE") {
+      return "Device offline — showing last data.";
     }
     return "Waiting for sensor readings.";
+  }
+
+  function riskMessage(risk) {
+    return RISK_MESSAGES[risk] || "Electrical anomaly detected.";
+  }
+
+  function directionReasonMessage(reason) {
+    return DIRECTION_REASON_MESSAGES[reason] || "Direction unavailable";
   }
 
   function workspaceSelection(activeName, tabNames) {
@@ -147,10 +169,12 @@
   const exportedFormatters = {
     createDialogController,
     deviceConditionMessage,
+    directionReasonMessage,
     formatAge,
     formatHistoryTime,
     formatLocalDateTime,
     nextWorkspaceTab,
+    riskMessage,
     workspaceSelection,
   };
   if (typeof module === "object" && module.exports) {
@@ -164,24 +188,12 @@
   const REQUEST_TIMEOUT_MS = 5000;
   const HISTORY_ROW_LIMIT = 100;
   const EVENT_ROW_LIMIT = 100;
-  const riskMessages = {
-    NORMAL: "No electrical anomaly detected at monitored point",
-    MONITOR: "Elevated demo reading — inspect sensor measurements.",
-    HIGH: "Electrical anomaly detected.",
-    CRITICAL: "Electrical anomaly detected.",
-  };
   const directionLabels = {
     NORTH: "↑ NORTH",
     EAST: "EAST →",
     SOUTH: "SOUTH ↓",
     WEST: "← WEST",
   };
-  const directionReasons = {
-    LOW_SIGNAL: "Signal too low to determine direction",
-    AMBIGUOUS: "Signals are too balanced to determine direction",
-    DOMINANT_AXIS: "Dominant directional gradient",
-  };
-
   const elements = {
     connectionWarning: document.getElementById("connection-warning"),
     deviceId: document.getElementById("device-id"),
@@ -324,10 +336,10 @@
   function renderRisk(measurement) {
     const risk = measurement.rule_risk;
     setText(elements.ruleRisk, risk);
-    setText(elements.ruleRiskMessage, riskMessages[risk] || "Electrical anomaly detected.");
+    setText(elements.ruleRiskMessage, riskMessage(risk));
     elements.riskCard.className = `monitor-card risk-card risk-${String(risk).toLowerCase()}`;
     if (risk === "CRITICAL") {
-      setText(elements.ruleRiskMessage, `${riskMessages[risk]} Do not approach the monitored area.`);
+      setText(elements.ruleRiskMessage, `${riskMessage(risk)} Do not approach the monitored area.`);
     }
   }
 
@@ -415,7 +427,7 @@
   function renderMeasurement(measurement) {
     renderRisk(measurement);
     setText(elements.directionArrow, directionLabels[measurement.direction] || "—");
-    setText(elements.directionReason, directionReasons[measurement.direction_reason] || "Direction unavailable");
+    setText(elements.directionReason, directionReasonMessage(measurement.direction_reason));
     setText(elements.gradientV, formatNumber(measurement.gradient_v, 3));
     setText(elements.waterLevel, formatNumber(measurement.water_level_cm, 1));
     setText(elements.conductivity, formatNumber(measurement.conductivity_ms_cm, 2));

@@ -3,12 +3,13 @@
   --ink: #14202b;
   --muted: #60707d;
   --subtle: #7d8b96;
-  --line: #d9e1e7;
-  --line-strong: #c5d0d8;
+  --line: #d2dde3;
+  --line-strong: #b9c8d1;
   --surface: #ffffff;
   --surface-soft: #f4f7f8;
   --page: #edf2f4;
   --accent: #176b86;
+  --accent-soft: #edf7fa;
   --normal: #28785d;
   --normal-soft: #edf7f2;
   --monitor: #956900;
@@ -196,6 +197,8 @@ dt {
 
 .header-freshness strong {
   color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .header-actions {
@@ -372,6 +375,8 @@ button:focus-visible {
 
 .direction-meta strong {
   flex: 0 0 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 0.82rem;
 }
 
@@ -399,6 +404,8 @@ button:focus-visible {
 
 .device-detail-row time {
   overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -425,6 +432,8 @@ button:focus-visible {
   margin: 7px 0 0;
   font-size: clamp(1.35rem, 2.1vw, 1.75rem);
   font-weight: 820;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
   letter-spacing: -0.035em;
   line-height: 1;
 }
@@ -527,6 +536,8 @@ button:focus-visible {
 
 .strongest-reading strong {
   color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 0.75rem;
 }
 
@@ -571,6 +582,8 @@ button:focus-visible {
 }
 
 .sensor-node strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 0.78rem;
 }
 
@@ -586,7 +599,7 @@ button:focus-visible {
 
 .sensor-node.is-strongest {
   border-color: #85b3c3;
-  background: #edf7fa;
+  background: var(--accent-soft);
 }
 
 .sensor-node.is-strongest span,
@@ -754,7 +767,7 @@ button:focus-visible {
 }
 
 .chart-grid-line {
-  stroke: #dce4e9;
+  stroke: var(--line);
   stroke-width: 1;
 }
 
@@ -900,6 +913,12 @@ tbody tr:hover {
 .event-time,
 .event-direction {
   color: var(--muted);
+}
+
+.event-time,
+td:first-child {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .event-direction {

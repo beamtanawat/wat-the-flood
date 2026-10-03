@@ -12,7 +12,7 @@
       <header class="console-header">
         <div class="brand-block">
           <h1>WAT THE FLOOD</h1>
-          <p>Electrical Anomaly Monitor</p>
+          <p>Flood Electrical Monitor</p>
         </div>
 
         <div class="header-live-state" aria-label="Live device state">
@@ -28,7 +28,7 @@
         <div class="header-actions">
           <div class="prototype-mark" role="note" title="University prototype. Readings are development evidence, not certified safety results.">
             <span>University prototype</span>
-            <small>ⓘ Prototype — not a certified safety device</small>
+            <small>ⓘ Prototype · Not safety-certified</small>
           </div>
           <button id="open-technical-details" class="technical-trigger" type="button" aria-haspopup="dialog">
             Technical details
@@ -43,10 +43,10 @@
       <section class="primary-monitor-row" aria-label="Current monitoring result">
         <article id="risk-card" class="monitor-card risk-card risk-normal" aria-labelledby="risk-heading">
           <div class="card-label-row">
-            <p class="eyebrow">Rule risk</p>
+            <p class="eyebrow">Risk Level</p>
             <span class="primary-label">Primary</span>
           </div>
-          <h2 id="risk-heading" class="visually-hidden">Prototype rule risk</h2>
+          <h2 id="risk-heading" class="visually-hidden">Risk Level</h2>
           <p id="rule-risk" class="risk-value">Waiting</p>
           <p id="rule-risk-message" class="risk-message">No sensor reading yet</p>
         </article>
@@ -64,13 +64,13 @@
         </article>
 
         <article class="monitor-card device-card" aria-labelledby="device-heading">
-          <p class="eyebrow">Device / freshness</p>
+          <p class="eyebrow">Device Status</p>
           <h2 id="device-heading" class="device-name"><span id="device-id">esp32-01</span></h2>
           <div class="device-detail-row">
-            <span>Last received</span>
+            <span>Last Update</span>
             <time id="last-received">No reading</time>
           </div>
-          <p id="device-condition-note" class="device-condition-note" data-unknown-message="Current conditions unknown — last received reading shown.">Waiting for sensor readings.</p>
+          <p id="device-condition-note" class="device-condition-note">Waiting for sensor readings.</p>
         </article>
       </section>
 
@@ -84,12 +84,12 @@
           <p class="metric-value"><span id="conductivity">—</span> <small>mS/cm</small></p>
         </article>
         <article class="metric-card">
-          <p class="eyebrow">Electrical magnitude</p>
+          <p class="eyebrow">Signal Level</p>
           <p class="metric-value"><span id="electrical-magnitude">—</span> <small>V RMS</small></p>
         </article>
         <article class="metric-card ai-metric" aria-labelledby="ai-heading">
           <div class="metric-heading-row">
-            <p class="eyebrow" id="ai-heading">Synthetic AI comparison</p>
+            <p class="eyebrow" id="ai-heading">AI Analysis</p>
             <span class="ai-status" id="ai-status">UNAVAILABLE</span>
           </div>
           <div class="ai-metric-value">
@@ -105,11 +105,11 @@
         <article class="workspace-card sensor-workspace" aria-labelledby="sensor-heading">
           <div class="workspace-card-header">
             <div>
-              <p class="eyebrow">Directional sensors</p>
-              <h2 id="sensor-heading">Measured RMS voltage</h2>
+              <p class="eyebrow">Direction Sensors</p>
+              <h2 id="sensor-heading">Sensor Signal</h2>
             </div>
             <p class="strongest-reading">
-              <span>Strongest measured direction</span>
+              <span>Strongest Signal</span>
               <strong id="strongest-direction">—</strong>
             </p>
           </div>
@@ -140,14 +140,14 @@
               <i aria-hidden="true"></i>
             </div>
           </div>
-          <p class="sensor-note">Strongest measured channel only; not a proven source location.</p>
+          <p class="sensor-note">Signal direction only</p>
         </article>
 
         <article class="workspace-card analysis-workspace" aria-labelledby="analysis-heading">
           <div class="analysis-header">
             <div>
               <p class="eyebrow">Analysis</p>
-              <h2 id="analysis-heading">Recent measurements</h2>
+              <h2 id="analysis-heading">Live Trends</h2>
             </div>
             <div id="workspace-tabs" role="tablist" aria-label="Analysis views" class="workspace-tabs">
               <button id="workspace-tab-trends" class="workspace-tab" type="button" role="tab" aria-selected="true" aria-controls="workspace-panel-trends" data-workspace-tab="trends" tabindex="0">Trends</button>
@@ -204,7 +204,7 @@
 
             <section id="workspace-panel-events" class="workspace-panel events-view" role="tabpanel" aria-labelledby="workspace-tab-events" data-workspace-panel="events" hidden>
               <div class="events-heading">
-                <p>Recent HIGH and CRITICAL rule readings</p>
+                <p>Recent high and critical readings</p>
               </div>
               <ul id="anomaly-list" class="event-list">
                 <li class="empty-state">No elevated readings.</li>
@@ -252,7 +252,7 @@
               <div><dt>model_version</dt><dd id="technical-model-version">—</dd></div>
             </dl>
           </div>
-          <p class="drawer-footnote">Synthetic model comparison only. Model score; not a validated safety probability.</p>
+          <p class="drawer-footnote">Strongest measured channel only. This does not confirm the physical source location. Synthetic model comparison only. Model score; not a validated safety probability.</p>
         </div>
       </div>
     </dialog>
