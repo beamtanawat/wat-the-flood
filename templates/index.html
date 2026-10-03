@@ -19,7 +19,8 @@
           <p>Flood Electrical Monitor</p>
         </div>
 
-        <div class="header-live-state" aria-label="Live device state">
+        <div class="header-live-state" aria-label="Primary device E12 status and freshness">
+          <span class="header-device-tag">E12 ·</span>
           <span class="status-pill" id="device-status-pill" data-status="unknown">
             <span class="status-dot" aria-hidden="true"></span>
             <span id="device-status">Waiting</span>
@@ -31,12 +32,12 @@
 
         <div class="header-actions">
           <nav class="view-navigation" aria-label="Dashboard views">
-            <button id="show-monitor-view" class="view-navigation-button is-active" type="button" aria-pressed="true">Monitor</button>
+            <button id="show-monitor-view" class="view-navigation-button is-active" type="button" aria-pressed="true">Overview</button>
             <button id="show-campus-map-view" class="view-navigation-button" type="button" aria-pressed="false">Campus Map</button>
           </nav>
+          <button id="campus-active-alerts" class="campus-alert-trigger global-alert-trigger" type="button" aria-expanded="false" aria-controls="campus-alert-panel">No Active Alerts</button>
           <div class="prototype-mark" role="note" title="University prototype. Readings are development evidence, not certified safety results.">
-            <span>University prototype</span>
-            <small>ⓘ Prototype · Not safety-certified</small>
+            <span>Prototype · Not safety-certified</span>
           </div>
           <button id="open-technical-details" class="technical-trigger" type="button" aria-haspopup="dialog">
             Technical details
@@ -44,12 +45,12 @@
         </div>
       </header>
 
-      <section id="monitor-view" class="monitor-view" aria-label="Monitor">
+      <section id="monitor-view" class="monitor-view" aria-label="Overview">
       <div id="connection-warning" class="connection-warning" role="status" title="Backend connection warning: latest reading unavailable." hidden>
         <span aria-hidden="true">⚠</span> Latest reading unavailable
       </div>
 
-      <section class="primary-monitor-row" aria-label="Current monitoring result">
+      <section class="primary-monitor-row" aria-label="Current Situation">
         <article id="risk-card" class="monitor-card risk-card risk-normal" aria-labelledby="risk-heading">
           <div class="card-label-row">
             <p class="eyebrow">Risk Level</p>
@@ -83,7 +84,7 @@
         </article>
       </section>
 
-      <section id="key-measurements" class="metrics-row" aria-label="Key measurements">
+      <section id="key-measurements" class="metrics-row" aria-label="Current Measurements (E12)">
         <article class="metric-card">
           <p class="eyebrow">Water level</p>
           <p class="metric-value"><span id="water-level">—</span> <small>cm</small></p>
@@ -93,20 +94,17 @@
           <p class="metric-value"><span id="conductivity">—</span> <small>mS/cm</small></p>
         </article>
         <article class="metric-card">
-          <p class="eyebrow">Signal Level</p>
+          <p class="eyebrow">Electrical Signal</p>
           <p class="metric-value"><span id="electrical-magnitude">—</span> <small>V RMS</small></p>
         </article>
         <article class="metric-card ai-metric" aria-labelledby="ai-heading">
           <div class="metric-heading-row">
-            <p class="eyebrow" id="ai-heading">AI Analysis</p>
-            <span class="ai-status" id="ai-status">UNAVAILABLE</span>
+            <p class="eyebrow" id="ai-heading">AI Comparison · Prototype</p>
           </div>
           <div class="ai-metric-value">
             <strong id="ai-risk">Unavailable</strong>
-            <span id="ai-confidence">—</span>
             <span class="agreement-badge" id="ai-agreement" data-result="unavailable">No comparison</span>
           </div>
-          <span class="model-name" id="model-version">—</span>
         </article>
       </section>
 
@@ -159,7 +157,7 @@
               <h2 id="analysis-heading">Live Trends</h2>
             </div>
             <div id="workspace-tabs" role="tablist" aria-label="Analysis views" class="workspace-tabs">
-              <button id="workspace-tab-trends" class="workspace-tab" type="button" role="tab" aria-selected="true" aria-controls="workspace-panel-trends" data-workspace-tab="trends" tabindex="0">Trends</button>
+              <button id="workspace-tab-trends" class="workspace-tab" type="button" role="tab" aria-selected="true" aria-controls="workspace-panel-trends" data-workspace-tab="trends" tabindex="0">Live Trend</button>
               <button id="workspace-tab-history" class="workspace-tab" type="button" role="tab" aria-selected="false" aria-controls="workspace-panel-history" data-workspace-tab="history" tabindex="-1">History</button>
               <button id="workspace-tab-events" class="workspace-tab" type="button" role="tab" aria-selected="false" aria-controls="workspace-panel-events" data-workspace-tab="events" tabindex="-1">Events</button>
             </div>
@@ -234,10 +232,9 @@
           <label class="campus-selector-label" for="campus-node-selector">Select sensor
             <select id="campus-node-selector"></select>
           </label>
-          <button id="campus-active-alerts" class="campus-alert-trigger" type="button" aria-expanded="false" aria-controls="campus-alert-panel">0 Active Alerts</button>
         </div>
 
-        <p class="campus-map-disclosure">Prototype · Not safety-certified. SIM readings are demonstrations. Pins show mapped points of interest, not confirmed sensor-installation positions.</p>
+        <p class="campus-map-disclosure">SIM readings are demo data. Pins show mapped points of interest, not confirmed sensor-installation positions.</p>
 
         <div class="campus-map-layout">
           <section class="campus-map-frame" aria-label="Interactive map of KMITL">
@@ -270,7 +267,7 @@
                 <div><dt>Water level</dt><dd id="campus-selected-water">—</dd></div>
                 <div><dt>Conductivity</dt><dd id="campus-selected-conductivity">—</dd></div>
                 <div><dt>Electrical magnitude</dt><dd id="campus-selected-magnitude">—</dd></div>
-                <div><dt>AI comparison</dt><dd id="campus-selected-ai">Unavailable</dd></div>
+                <div><dt>AI comparison · Prototype</dt><dd id="campus-selected-ai">Unavailable</dd></div>
               </dl>
               <p id="campus-selected-updated" class="campus-selected-updated">Last update: —</p>
             </section>

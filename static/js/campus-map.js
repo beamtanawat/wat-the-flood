@@ -121,6 +121,13 @@
     ui.fallback.hidden = false;
   }
 
+  function activeAlertLabel(alerts) {
+    if (!alerts.length) {
+      return "No Active Alerts";
+    }
+    return `${alerts.length} Active Alert${alerts.length === 1 ? "" : "s"}`;
+  }
+
   function formatAge(seconds) {
     if (typeof seconds !== "number" || !Number.isFinite(seconds)) {
       return "—";
@@ -331,7 +338,7 @@
 
     function renderAlerts(states) {
       const alerts = getActiveAlerts(states);
-      ui.alertTrigger.textContent = `${alerts.length} Active Alert${alerts.length === 1 ? "" : "s"}`;
+      ui.alertTrigger.textContent = activeAlertLabel(alerts);
       const level = alerts.some((alert) => alert.risk === "CRITICAL")
         ? "critical"
         : alerts.length ? "high" : "none";
@@ -479,7 +486,12 @@
     ui.selector.addEventListener("change", () => selectNode(ui.selector.value, { center: true }));
     ui.fitAll.addEventListener("click", fitAll);
     ui.alertTrigger.addEventListener("click", () => {
-      alertsOpen = !alertsOpen;
+      if (!mapViewActive) {
+        switchView("campus");
+        alertsOpen = true;
+      } else {
+        alertsOpen = !alertsOpen;
+      }
       renderAlerts(stateList());
       if (alertsOpen) {
         ui.alertClose.focus();
@@ -513,6 +525,7 @@
     resolveNodeState,
     buildCampusSummary,
     getActiveAlerts,
+    activeAlertLabel,
     subscribeToLatest,
     showMapFallback,
     initialize,

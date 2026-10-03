@@ -33,7 +33,8 @@ def test_dashboard_page_exposes_priority_sections(client):
     assert "University prototype" in html
     assert 'id="rule-risk"' in html
     assert "Risk Level" in html
-    assert "AI Analysis" in html
+    assert "AI Comparison · Prototype" in html
+    assert "Electrical Signal" in html
     assert "Live Trends" in html
     assert "Signal direction only" in html
     assert 'id="history-body"' in html
@@ -59,6 +60,39 @@ def test_dashboard_exposes_monitor_and_campus_map_navigation(client):
     assert 'id="monitor-view"' in html[:html.index('id="campus-map-view"')]
 
 
+def test_global_header_keeps_device_freshness_alerts_and_navigation_together(client):
+    html = client.get("/").get_data(as_text=True)
+    header = html[html.index('<header class="console-header">'):html.index("</header>")]
+    campus_view = html[html.index('id="campus-map-view"'):]
+
+    for element_id in (
+        "show-monitor-view",
+        "show-campus-map-view",
+        "device-status",
+        "reading-age",
+        "campus-active-alerts",
+        "open-technical-details",
+    ):
+        assert f'id="{element_id}"' in header
+
+    assert "E12" in header
+    assert 'id="campus-active-alerts"' not in campus_view
+    assert ">Overview<" in header
+
+
+def test_overview_groups_measurements_and_keeps_analysis_tabs_in_place(client):
+    html = client.get("/").get_data(as_text=True)
+    overview = html[html.index('id="monitor-view"'):html.index('id="campus-map-view"')]
+
+    assert 'aria-label="Current Situation"' in overview
+    assert 'aria-label="Current Measurements (E12)"' in overview
+    assert "AI Comparison · Prototype" in overview
+    for tab in ("Live Trend", "History", "Events"):
+        assert tab in overview
+    assert overview.index('id="rule-risk"') < overview.index('id="direction"')
+    assert overview.index('id="direction"') < overview.index('id="key-measurements"')
+
+
 def test_campus_map_markup_contains_map_selector_summary_details_alerts_and_fallback(client):
     html = client.get("/").get_data(as_text=True)
     campus_view = html[html.index('id="campus-map-view"'):]
@@ -68,7 +102,6 @@ def test_campus_map_markup_contains_map_selector_summary_details_alerts_and_fall
         "campus-node-selector",
         "campus-node-summary",
         "campus-selected-node",
-        "campus-active-alerts",
         "campus-alert-list",
         "campus-map-fallback",
         "campus-fit-all",
@@ -78,6 +111,8 @@ def test_campus_map_markup_contains_map_selector_summary_details_alerts_and_fall
     assert "OpenStreetMap" in campus_view
     assert "mapped points of interest" in campus_view
     assert "not confirmed sensor-installation positions" in campus_view
+    assert "SIM readings are demo data." in campus_view
+    assert "Prototype · Not safety-certified. SIM readings" not in campus_view
     assert "Campus map unavailable — sensor monitoring remains active." in campus_view
     assert "/api/latest" not in campus_view
 
@@ -219,6 +254,21 @@ def test_sim_high_critical_are_demo_alerts_and_normal_monitor_are_not_alerts():
         ["sim-a-tower", "CRITICAL", "SIM", "Demo electrical anomaly."],
         ["sim-telecom-tower", "HIGH", "SIM", "Demo electrical anomaly."],
     ]
+
+
+def test_active_alert_button_uses_neutral_copy_when_clear():
+    values = run_dashboard_formatters(
+        """
+        const { activeAlertLabel } = require('./static/js/campus-map.js');
+        process.stdout.write(JSON.stringify([
+          activeAlertLabel([]),
+          activeAlertLabel([{ id: 'e12', risk: 'HIGH' }]),
+          activeAlertLabel([{ id: 'a' }, { id: 'b' }])
+        ]));
+        """
+    )
+
+    assert values == ["No Active Alerts", "1 Active Alert", "2 Active Alerts"]
 
 
 def test_summary_counts_current_status_without_counting_stale_risk():
@@ -461,7 +511,7 @@ def test_dashboard_uses_plain_labels_and_keeps_diagnostics_in_technical_details(
 
     assert "Device Status" in html
     assert "Last Update" in html
-    assert "Signal Level" in html
+    assert "Electrical Signal" in html
     assert "Direction Sensors" in html
     assert "Sensor Signal" in html
     assert "Strongest Signal" in html
@@ -507,6 +557,24 @@ def test_dashboard_prioritizes_rule_direction_and_compact_measurements(client):
     assert 'id="direction-arrow"' in html
     assert 'id="strongest-direction"' in html
     assert 'id="ai-agreement"' in html
+
+
+def test_dashboard_keeps_ai_score_and_model_diagnostics_in_technical_details(client):
+    html = client.get("/").get_data(as_text=True)
+    overview = html[html.index('id="monitor-view"'):html.index('id="campus-map-view"')]
+    technical_drawer_position = html.index('id="technical-drawer"')
+
+    for internal_id in ("ai-status", "ai-confidence", "model-version"):
+        assert f'id="{internal_id}"' not in overview
+
+    for internal_id in (
+        "technical-ai-status",
+        "technical-ai-confidence",
+        "technical-model-version",
+    ):
+        assert html.index(f'id="{internal_id}"') > technical_drawer_position
+
+    assert "AI Comparison · Prototype" in overview
 
 
 def test_dashboard_keeps_raw_fields_inside_technical_drawer(client):

@@ -261,10 +261,7 @@
     westRms: document.getElementById("west-rms"),
     sensorCompass: document.getElementById("sensor-compass"),
     strongestDirection: document.getElementById("strongest-direction"),
-    aiStatus: document.getElementById("ai-status"),
     aiRisk: document.getElementById("ai-risk"),
-    aiConfidence: document.getElementById("ai-confidence"),
-    modelVersion: document.getElementById("model-version"),
     aiAgreement: document.getElementById("ai-agreement"),
     historyEmpty: document.getElementById("history-empty"),
     historyBody: document.getElementById("history-body"),
@@ -368,9 +365,6 @@
       elements.westRms,
     ].forEach((element) => setText(element, "—"));
     setText(elements.aiRisk, "Unavailable");
-    setText(elements.aiConfidence, "—");
-    setText(elements.modelVersion, "—");
-    setText(elements.aiStatus, "UNAVAILABLE");
     setText(elements.aiAgreement, "No comparison");
     elements.aiAgreement.dataset.result = "unavailable";
     resetTechnicalDetails();
@@ -420,15 +414,7 @@
   function renderAI(measurement) {
     const status = measurement.ai_status || "UNAVAILABLE";
     const aiRisk = measurement.ai_risk;
-    setText(elements.aiStatus, status);
     setText(elements.aiRisk, aiRisk || "Unavailable");
-    setText(
-      elements.aiConfidence,
-      typeof measurement.ai_confidence === "number"
-        ? `${(measurement.ai_confidence * 100).toFixed(1)}%`
-        : "—",
-    );
-    setText(elements.modelVersion, measurement.model_version || "—");
     elements.aiRisk.className = aiRisk ? `risk-${aiRisk.toLowerCase()}` : "";
 
     if (status === "OK" && aiRisk) {
