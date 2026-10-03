@@ -108,6 +108,48 @@
     return DIRECTION_REASON_MESSAGES[reason] || "Direction unavailable";
   }
 
+  function latestEventDetail(data) {
+    const measurementFields = [
+      "device_id",
+      "timestamp",
+      "water_level_cm",
+      "conductivity_ms_cm",
+      "north_rms_v",
+      "east_rms_v",
+      "south_rms_v",
+      "west_rms_v",
+      "gradient_v",
+      "direction",
+      "direction_reason",
+      "rule_risk",
+      "ai_risk",
+      "ai_confidence",
+    ];
+    const deviceFields = ["device_id", "status", "last_received_at", "age_seconds"];
+    const measurement = data && data.measurement;
+    const device = data && data.device || {};
+    return {
+      measurement: measurement
+        ? Object.fromEntries(measurementFields
+          .filter((field) => Object.prototype.hasOwnProperty.call(measurement, field))
+          .map((field) => [field, measurement[field]]))
+        : null,
+      device: Object.fromEntries(deviceFields
+        .filter((field) => Object.prototype.hasOwnProperty.call(device, field))
+        .map((field) => [field, device[field]])),
+    };
+  }
+
+  function dispatchLatestState(target, data, EventConstructor) {
+    const CustomEventType = EventConstructor || (typeof CustomEvent === "function" ? CustomEvent : null);
+    if (!target || typeof target.dispatchEvent !== "function" || !CustomEventType) {
+      return false;
+    }
+    return target.dispatchEvent(new CustomEventType("watf:latest", {
+      detail: latestEventDetail(data),
+    }));
+  }
+
   function workspaceSelection(activeName, tabNames) {
     const selectedName = tabNames.includes(activeName) ? activeName : tabNames[0];
     return Object.fromEntries(
@@ -168,6 +210,7 @@
 
   const exportedFormatters = {
     createDialogController,
+    dispatchLatestState,
     deviceConditionMessage,
     directionReasonMessage,
     formatAge,
@@ -443,6 +486,7 @@
     } else {
       renderEmpty();
     }
+    dispatchLatestState(window, data, CustomEvent);
   }
 
   async function fetchLatest() {

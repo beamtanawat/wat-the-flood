@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WAT THE FLOOD</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script defer src="{{ url_for('static', filename='js/campus-nodes.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/campus-map.js') }}"></script>
     <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script id="leaflet-script" async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   </head>
   <body>
     <main class="console-shell">
@@ -26,6 +30,10 @@
         </div>
 
         <div class="header-actions">
+          <nav class="view-navigation" aria-label="Dashboard views">
+            <button id="show-monitor-view" class="view-navigation-button is-active" type="button" aria-pressed="true">Monitor</button>
+            <button id="show-campus-map-view" class="view-navigation-button" type="button" aria-pressed="false">Campus Map</button>
+          </nav>
           <div class="prototype-mark" role="note" title="University prototype. Readings are development evidence, not certified safety results.">
             <span>University prototype</span>
             <small>ⓘ Prototype · Not safety-certified</small>
@@ -36,6 +44,7 @@
         </div>
       </header>
 
+      <section id="monitor-view" class="monitor-view" aria-label="Monitor">
       <div id="connection-warning" class="connection-warning" role="status" title="Backend connection warning: latest reading unavailable." hidden>
         <span aria-hidden="true">⚠</span> Latest reading unavailable
       </div>
@@ -212,6 +221,72 @@
             </section>
           </div>
         </article>
+      </section>
+      </section>
+
+      <section id="campus-map-view" class="campus-map-view" aria-label="KMITL Campus Map" hidden>
+        <div class="campus-map-toolbar">
+          <div>
+            <p class="eyebrow">Campus Network</p>
+            <h2>KMITL Campus Sensor Map</h2>
+          </div>
+          <div id="campus-node-summary" class="campus-node-summary" aria-label="Campus node status counts" aria-live="polite"></div>
+          <label class="campus-selector-label" for="campus-node-selector">Select sensor
+            <select id="campus-node-selector"></select>
+          </label>
+          <button id="campus-active-alerts" class="campus-alert-trigger" type="button" aria-expanded="false" aria-controls="campus-alert-panel">0 Active Alerts</button>
+        </div>
+
+        <p class="campus-map-disclosure">Prototype · Not safety-certified. SIM readings are demonstrations. Pins show mapped points of interest, not confirmed sensor-installation positions.</p>
+
+        <div class="campus-map-layout">
+          <section class="campus-map-frame" aria-label="Interactive map of KMITL">
+            <div id="campus-map" class="campus-map" role="application" aria-label="Interactive KMITL map. Use map controls to zoom and pan."></div>
+            <p id="campus-map-fallback" class="campus-map-fallback" role="status" hidden>Campus map unavailable — sensor monitoring remains active.</p>
+            <button id="campus-fit-all" class="campus-fit-all" type="button">Fit campus</button>
+            <div class="campus-map-legend" aria-label="Map legend">
+              <span><i class="risk-normal" aria-hidden="true"></i>Normal</span>
+              <span><i class="risk-monitor" aria-hidden="true"></i>Monitor</span>
+              <span><i class="risk-high" aria-hidden="true"></i>High</span>
+              <span><i class="risk-critical" aria-hidden="true"></i>Critical</span>
+              <span><i class="risk-offline" aria-hidden="true"></i>Offline</span>
+              <span>LIVE = physical node · SIM = demo node</span>
+            </div>
+          </section>
+
+          <aside class="campus-side-panel">
+            <section id="campus-selected-node" class="campus-detail-panel" aria-labelledby="campus-selected-name" aria-live="polite">
+              <p class="eyebrow">Selected sensor</p>
+              <div class="campus-selected-heading">
+                <h2 id="campus-selected-name">E12 Engineering Building</h2>
+                <span id="campus-selected-mode" class="campus-mode-badge">LIVE</span>
+              </div>
+              <p id="campus-selected-location" class="campus-selected-location">Mapped POI · KMITL</p>
+              <p id="campus-selected-status" class="campus-selected-status">Waiting for sensor reading</p>
+              <p id="campus-selected-risk" class="campus-selected-risk">Unknown</p>
+              <p id="campus-selected-message" class="campus-selected-message">No sensor reading yet</p>
+              <dl class="campus-measurements">
+                <div><dt>Direction</dt><dd id="campus-selected-direction">—</dd></div>
+                <div><dt>Water level</dt><dd id="campus-selected-water">—</dd></div>
+                <div><dt>Conductivity</dt><dd id="campus-selected-conductivity">—</dd></div>
+                <div><dt>Electrical magnitude</dt><dd id="campus-selected-magnitude">—</dd></div>
+                <div><dt>AI comparison</dt><dd id="campus-selected-ai">Unavailable</dd></div>
+              </dl>
+              <p id="campus-selected-updated" class="campus-selected-updated">Last update: —</p>
+            </section>
+
+            <section id="campus-alert-panel" class="campus-alert-panel" aria-labelledby="campus-alert-title" hidden>
+              <div class="campus-alert-heading">
+                <h2 id="campus-alert-title">Active Alerts</h2>
+                <button id="campus-close-alerts" type="button" aria-label="Close active alerts">×</button>
+              </div>
+              <ul id="campus-alert-list" class="campus-alert-list" aria-live="polite">
+                <li>No active alerts.</li>
+              </ul>
+            </section>
+          </aside>
+        </div>
+        <p class="campus-attribution-note">Map data © OpenStreetMap contributors</p>
       </section>
     </main>
 
